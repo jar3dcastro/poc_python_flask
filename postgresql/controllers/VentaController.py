@@ -4,9 +4,7 @@ from models.venta import Venta
 from models.producto import Producto
 from models.moneda import Moneda
 
-
-
-def obtener_de_api_masivo (paths, mode = 'async') :
+def obtener_de_api_masivo (paths, mode = 'parallel') :
     if mode == 'sync' :
 
         import requests
@@ -58,7 +56,7 @@ class VentaController :
             mes = request.json['mes']
             moneda = request.json['moneda']
             usuario_consulta = request.json['usuario_consulta']
-            modo_ejecucion_request = request.args.get('modo')
+            modo_ejecucion_request = 'parallel'#request.args.get('modo')
             # contantes
             PEN = 1
             USD = 2
