@@ -9,9 +9,25 @@ services:
       - 5000:5000
     depends_on:
       - nosql-benchmark
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 1024M
+        reservations:
+          cpus: '0.5'
+          memory: 256M
   nosql-benchmark:
     build: ./mongodb
     volumes:
       - ./mongodb:/app
     ports:
       - 5001:5001
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 1024M
+        reservations:
+          cpus: '0.5'
+          memory: 256M

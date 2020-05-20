@@ -37,11 +37,11 @@ def obtener_de_api_masivo (paths, mode = 'parallel') :
         import requests
         with futures.ThreadPoolExecutor(max_workers=365) as executor :
             futures = [
-                executor.submit(lambda : requests.get('http://nosql-benchmark:5001/' + path).json())
+                [executor.submit(lambda : requests.get('http://nosql-benchmark:5001/tipocambio/' + path).json()), path]
                 for path in paths
             ]
         respuestas = [
-            future.result()
+            [future[0].result(), future[1]]
             for future in futures
         ]
         return respuestas
@@ -97,13 +97,14 @@ class VentaController :
                     cambios_moneda[venta.aniomesdia] = respuesta_api['tipo_cambio']'''
             # obtener cambios de moneda para cada fecha
             paths = [
-                f'tipocambio/{aniomesdia}'
-                for aniomesdia in cambios_moneda.keys()
+                aniomesdia for aniomesdia in cambios_moneda.keys()
             ]
             respuestas_api = obtener_de_api_masivo(paths, mode=modo_ejecucion_request)
-            for respuesta_api in respuestas_api :
+            for _respuesta_api in respuestas_api :
+                respuesta_api = _respuesta_api[0]
+                aniomesdia = _respuesta_api[1]
                 if 'error' not in respuesta_api :
-                    cambios_moneda[venta.aniomesdia] = respuesta_api['tipo_cambio']
+                    cambios_moneda[aniomesdia] = respuesta_api['tipo_cambio']
             # procesar resumen
             resumen_ventas = {}
             for venta in ventas :
